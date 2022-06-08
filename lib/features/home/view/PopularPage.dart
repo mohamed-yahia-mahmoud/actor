@@ -1,6 +1,5 @@
-import 'package:actor/features/home/gallery/controller/gallery_controller.dart';
-import 'package:actor/features/home/gallery/view/image_card.dart';
-import 'package:actor/features/home/gallery/view/popular_app_bar.dart';
+import 'package:actor/features/home/controller/PopularPeopleController.dart';
+import 'package:actor/features/home/view/image_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
@@ -19,34 +18,15 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
       builder: (controller) => SafeArea(
           child: Scaffold(
 
+            appBar: AppBar(
+              title: const Center(child: Text("Popular people app",style: TextStyle(
+                color: Colors.yellow
+              ),),),
+            ),
               body: Column(
                 children: [
-                  AppBarWidget(isFilter: false,isSideMenu: false,isSearchBar: false,),
 
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15,vertical:6),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-
-                        Container(
-                          height: 30.0,
-                          padding: EdgeInsets.symmetric(horizontal: 25,vertical: 1),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7),
-                              color: Color(0xff4184CE)
-                          ),
-                          child: Text('Popular',style: TextStyle(color: Colors.white,fontSize: 15 ),),
-                        ),
-                        const Icon(Icons.save_alt,)
-                        // SvgPicture.asset('images/savetodrive.svg',height: 52.43.h,
-                        //   width: 47.43.w,fit: BoxFit.fitHeight,),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height:18),
+                 const SizedBox(height:8),
                   Expanded(
                     child: SmartRefresher(
                       controller: controller.refreshController,

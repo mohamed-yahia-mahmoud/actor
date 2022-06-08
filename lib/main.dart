@@ -1,6 +1,6 @@
 import 'package:actor/appCore/network/service.dart';
-import 'package:actor/features/home/gallery/view/PopularPage.dart';
-import 'package:dio/dio.dart';
+import 'package:actor/features/home/view/PopularPage.dart';
+ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 RestClient? client;
 Dio? dio;
