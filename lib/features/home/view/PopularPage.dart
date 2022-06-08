@@ -1,5 +1,6 @@
 import 'package:actor/appCore/network/response/GetPersonDetailsResponse.dart';
 import 'package:actor/features/home/controller/PopularPeopleController.dart';
+import 'package:actor/features/home/view/ImagePage.dart';
 import 'package:actor/features/home/view/grid_card.dart';
 import 'package:actor/features/home/view/image_card.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:get/get.dart';
 class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
 
   final PopularPeopleController  controller = Get.put(PopularPeopleController());
@@ -179,14 +180,19 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                   ),
 
                   SizedBox(
-                    height: MediaQuery.of(context).size.height*.56,
+                    height: MediaQuery.of(context).size.height*.54,
                     child:  GridView.builder(
                       gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 10),
                         padding: const EdgeInsets.only(bottom:10,left: 15,right: 15),
                         itemCount: controller.profileList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return
-                            GridCard(url:controller.profileList[index].filePath,itemId:  index );
+                            InkWell(
+                                onTap: (){
+                                  controller.openedPersonProfileImage=controller.profileList[index];
+                                  Get.to(ImagePage());
+                                },
+                                child: GridCard(url:controller.profileList[index].filePath,itemId:  index ));
                         }
                     ),
                   )

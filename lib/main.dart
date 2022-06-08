@@ -3,6 +3,7 @@ import 'package:actor/features/home/view/PopularPage.dart';
  import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 RestClient? client;
 Dio? dio;
 void main() {
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
 
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

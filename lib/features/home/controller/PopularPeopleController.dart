@@ -21,6 +21,9 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
     super.onInit();
   }
 
+  String? openedPersonName;
+  Profiles? openedPersonProfileImage;
+
   ScrollController scrollController = ScrollController();
   int currentPage = 1;
   late int totalPages = 0;
