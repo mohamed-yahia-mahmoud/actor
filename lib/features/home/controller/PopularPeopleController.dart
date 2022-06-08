@@ -1,81 +1,57 @@
-import 'dart:io';
-
-
 import 'package:actor/appCore/network/request/GetPersonDetailsRequest.dart';
 import 'package:actor/appCore/network/request/GetPersonImagesRequest.dart';
 import 'package:actor/appCore/network/request/GetPopularPeopleRequest.dart';
 import 'package:actor/appCore/network/response/GetPersonDetailsResponse.dart';
 import 'package:actor/appCore/network/response/GetPersonImagesResponse.dart';
 import 'package:actor/appCore/network/response/PopularPeopleResponse.dart';
-import 'package:actor/appCore/networking/api_provider.dart';
 import 'package:actor/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
- import 'package:get/get.dart';
- import 'package:logger/logger.dart';
- import 'package:dio/dio.dart' as dio;
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PopularPeopleController extends GetxController  with StateMixin<PopularPeopleResponse> {
 
-  var currentIndex = 0.obs;
-  var adsId = 0.obs;
-  ScrollController scrollController = ScrollController();
-  var noImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScPr_e8yD_adDE0sUA6xJykV7Vuwyc0xQoun4XfAANTKGYdq2m99kHFf-Hc_XpY0YVnug&usqp=CAU';
-
-  List<int>? checkListFunctions = [];
-
-  GlobalKey<FormState> searchFormKey = GlobalKey<FormState>();
-  late TextEditingController searchController;
-  var search = '';
-
-  late String token;
-  List<int> mylist = <int>[];
-
   @override
   void onInit() {
-    searchController = TextEditingController();
     loadMore();
-   // getPopularPeopleData(isRefresh:true);
     super.onInit();
   }
 
-
+  ScrollController scrollController = ScrollController();
   int currentPage = 1;
-
   late int totalPages = 0;
-  final RefreshController refreshController = RefreshController(
-      initialRefresh: true);
-  final ApiService _apiService = Get.put(ApiService());
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  int page = 0;
+  List<Results> popularList = [];
+  List<Profiles> profileList = [];
 
+  /// definition of responses
+  var myPopularPeopleResponse = PopularPeopleResponse().obs;
+  var myPersonDetailsResponse = GetPersonDetailsResponse().obs;
+  var myPersonImagesResponse = GetPersonImagesResponse().obs;
+
+  /// definition of requests
+  GetPopularPeopleRequest? getPopularPeopleRequest = GetPopularPeopleRequest(page: 1,);
+  GetPersonDetailsRequest? getPersonDetailsRequest = GetPersonDetailsRequest();
+  GetPersonImagesRequest? getPersonImagesRequest = GetPersonImagesRequest();
+
+  ///for pagination and loading more next page
   void loadMore() async {
     scrollController.addListener(() async {
       if (scrollController.position.pixels >= scrollController.position.maxScrollExtent) {
-        print("entered load more");
         getPopularPeopleData();
       }
     });
   }
 
-  bool detailsLoaded=false;
-  bool imagesLoaded=false;
-
-  List<Results> popularList = [];
-  List<Profiles> profileList = [];
-  var myPopularPeopleResponse = PopularPeopleResponse().obs;
-  var myPersonDetailsResponse = GetPersonDetailsResponse().obs;
-  var myPersonImagesResponse = GetPersonImagesResponse().obs;
-
-  GetPopularPeopleRequest? getPopularPeopleRequest = GetPopularPeopleRequest(
-    page: 1,);
-  GetPersonDetailsRequest? getPersonDetailsRequest = GetPersonDetailsRequest();
-  GetPersonImagesRequest? getPersonImagesRequest = GetPersonImagesRequest();
-
+  /// get popular people fun
   Future<bool> getPopularPeopleData({bool isRefresh = false }) async {
+        EasyLoading.show();
+
     if (isRefresh) {
       currentPage = 1;
     } else {
@@ -91,6 +67,9 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
     getPopularPeopleRequest!.language = "en-Us";
     Logger().i(getPopularPeopleRequest!.toJson());
     client!.getPopularPeople(getPopularPeopleRequest!.toJson(),).then((res) {
+      if(EasyLoading.isShow){
+        EasyLoading.dismiss();
+      }
       if (isRefresh) {
         popularList = res.results ?? [];
       } else {
@@ -103,12 +82,14 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
       update();
       return true;
     }).catchError((Object obj) {
+      if(EasyLoading.isShow){
+        EasyLoading.dismiss();
+      }
       // non-200 error goes here.
       switch (obj.runtimeType) {
         case DioError:
         // Here's the sample to get the failed response error code and message
-          print("erorrrrrrrrrrrrrrr");
-          final res = (obj as DioError).response;
+           final res = (obj as DioError).response;
           Logger().e("Got error : ${res?.statusCode} -> ${res?.statusMessage}");
 
           Get.snackbar(
@@ -128,57 +109,40 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
     return false;
   }
 
+  /// get details of a specific person
   Future<void> getPopularDetailsData(int personId) async {
-
      myPersonDetailsResponse.value=GetPersonDetailsResponse();
     EasyLoading.show();
     getPersonDetailsRequest!.api_key = "99d82c14f594b2706abe96bbce3e235c";
     getPersonDetailsRequest!.language = "en-Us";
     Logger().i(getPopularPeopleRequest!.toJson());
     client!.getPopularPeopleDetails(personId,getPopularPeopleRequest!.toJson(),).then((res) {
-      // if(EasyLoading.isShow){
-      //   EasyLoading.dismiss();
-      // }
-
       myPersonDetailsResponse.value = res;
       print("my myPersonDetailsResponse   " + myPersonDetailsResponse.value.toString());
-
       update();
-      detailsLoaded=true;
-
     }).catchError((Object obj) {
-      // if(EasyLoading.isShow){
-      //   EasyLoading.dismiss();
-      // }
       // non-200 error goes here.
       switch (obj.runtimeType) {
         case DioError:
         // Here's the sample to get the failed response error code and message
-          print("erorrrrrrrrrrrrrrr");
           final res = (obj as DioError).response;
           Logger().e("Got error : ${res?.statusCode} -> ${res?.statusMessage}");
-
           Get.snackbar(
             "خطأ",
             res!.statusMessage.toString(),
             icon: const Icon(Icons.person, color: Colors.red),
             backgroundColor: Colors.yellow,
             snackPosition: SnackPosition.BOTTOM,);
-          detailsLoaded=true;
-          return Future.error(false);
-        default:
+           return Future.error(false);
+         default:
           final err = (obj).toString();
           Logger().e("Got error : $err");
-          detailsLoaded=true;
-          break;
+           break;
       }
-
     });
-    // if(EasyLoading.isShow){
-    //   EasyLoading.dismiss();
-    // }
   }
 
+  /// get images of a specific person
   Future<void> getPopularImages(int personId) async {
     profileList.clear();
     // EasyLoading.show();
@@ -195,12 +159,10 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
       print("my myPersonImagesResponse len " + profileList.length.toString());
 
       update();
-      imagesLoaded=true;
     }).catchError((Object obj) {
       // if(EasyLoading.isShow){
       //   EasyLoading.dismiss();
       // }
-      imagesLoaded=true;
       // non-200 error goes here.
       switch (obj.runtimeType) {
         case DioError:
@@ -223,9 +185,6 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
           break;
       }
     });
-    // if(EasyLoading.isShow){
-    //   EasyLoading.dismiss();
-    // }
   }
 
 }
