@@ -57,6 +57,7 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                           controller.refreshController.refreshCompleted();
                         } else {
                           controller.refreshController.refreshFailed();
+                          //controller.refreshController.isLoading?CircularProgressIndicator():null;
                         }
                       },
                       onLoading: () async {
@@ -67,10 +68,16 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                           controller.getPopularPeopleData(isRefresh: false):print("not end yet");
                           controller.refreshController.loadComplete();
                         } else {
-                          controller.refreshController.loadFailed();
+                         // controller.refreshController.isLoading?CircularProgressIndicator():controller.refreshController.loadComplete();
+                          controller.refreshController.loadComplete();
                         }
                       },
-                      child: GridView.builder(
+                      child: ListView.builder(
+                          itemCount: controller.popularList.length,
+                          itemBuilder: ( context,  index) {
+                            return ImageCard(url:controller.popularList[index].profilePath,itemId: controller.popularList[index].id,);
+                          } ),
+                      /*GridView.builder(
                         gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 10),
                           padding: const EdgeInsets.only(bottom:10,left: 15,right: 15),
                           itemCount: controller.popularList.length,
@@ -78,7 +85,7 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                             return
                             ImageCard(url:controller.popularList[index].profilePath,itemId: controller.popularList[index].id,);
                           }
-                      ),
+                      ),*/
                     ),
                     ),
 

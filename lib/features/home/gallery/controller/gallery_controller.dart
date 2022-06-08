@@ -33,7 +33,8 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
   @override
   void onInit() {
     searchController = TextEditingController();
-    getPopularPeopleData();
+    loadMore();
+   // getPopularPeopleData(isRefresh:true);
     super.onInit();
   }
 
@@ -48,10 +49,10 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
   int page = 0;
 
   void loadMore() async {
-    scrollController?.addListener(() async {
-      if (scrollController?.position.maxScrollExtent ==
-          scrollController?.position.pixels) {
-
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >= scrollController.position.maxScrollExtent) {
+        print("entered load more");
+        getPopularPeopleData();
       }
     });
   }
@@ -67,6 +68,7 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
       currentPage = 1;
     } else {
       if (currentPage >= totalPages) {
+        print("entered no more");
         refreshController.loadNoData();
         return false;
       }

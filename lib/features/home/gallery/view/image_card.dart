@@ -34,11 +34,14 @@ class _ImageCardState extends State<ImageCard> {
         alignment: Alignment.center,
         children: [
           Container(
-            height: 169 ,
+            height: MediaQuery.of(context).size.height*.25,
+            width: MediaQuery.of(context).size.width*.85,
             // width: 342,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(image: NetworkImage("https://image.tmdb.org/t/p/w500/"+widget.url!),fit: BoxFit.fill)
+              image: DecorationImage(image: widget.url!=null?NetworkImage("https://image.tmdb.org/t/p/w500/"+widget.url!):
+             const NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScPr_e8yD_adDE0sUA6xJykV7Vuwyc0xQoun4XfAANTKGYdq2m99kHFf-Hc_XpY0YVnug&usqp=CAU')
+                  ,fit: BoxFit.fill)
             ),
           ),
         ],
