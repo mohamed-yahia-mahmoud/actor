@@ -4,18 +4,18 @@ import 'package:flutter/painting.dart';
 
 import 'package:get/get.dart';
 
-class ImageCard extends StatefulWidget {
+class GridCard extends StatefulWidget {
 
   final String?  url;
   final int? itemId;
 
-    ImageCard({ this.url, this.itemId,Key? key,}) : super(key: key);
+    GridCard({ this.url, this.itemId,Key? key,}) : super(key: key);
 
   @override
-  State<ImageCard> createState() => _ImageCardState();
+  State<GridCard> createState() => _GridCardState();
 }
 
-class _ImageCardState extends State<ImageCard> {
+class _GridCardState extends State<GridCard> {
    late bool visible;
 
   @override
@@ -34,9 +34,7 @@ class _ImageCardState extends State<ImageCard> {
         alignment: Alignment.center,
         children: [
           Container(
-
-            height: MediaQuery.of(context).size.height*.25,
-            width: MediaQuery.of(context).size.width*.85,
+            height: 169 ,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
               image: DecorationImage(image: widget.url!=null?NetworkImage("https://image.tmdb.org/t/p/w500/"+widget.url!):

@@ -1,7 +1,11 @@
 import 'dart:io';
 
 
+import 'package:actor/appCore/network/request/GetPersonDetailsRequest.dart';
+import 'package:actor/appCore/network/request/GetPersonImagesRequest.dart';
 import 'package:actor/appCore/network/request/GetPopularPeopleRequest.dart';
+import 'package:actor/appCore/network/response/GetPersonDetailsResponse.dart';
+import 'package:actor/appCore/network/response/GetPersonImagesResponse.dart';
 import 'package:actor/appCore/network/response/PopularPeopleResponse.dart';
 import 'package:actor/appCore/networking/api_provider.dart';
 import 'package:actor/main.dart';
@@ -57,11 +61,19 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
     });
   }
 
+  bool detailsLoaded=false;
+  bool imagesLoaded=false;
 
   List<Results> popularList = [];
+  List<Profiles> profileList = [];
   var myPopularPeopleResponse = PopularPeopleResponse().obs;
+  var myPersonDetailsResponse = GetPersonDetailsResponse().obs;
+  var myPersonImagesResponse = GetPersonImagesResponse().obs;
+
   GetPopularPeopleRequest? getPopularPeopleRequest = GetPopularPeopleRequest(
     page: 1,);
+  GetPersonDetailsRequest? getPersonDetailsRequest = GetPersonDetailsRequest();
+  GetPersonImagesRequest? getPersonImagesRequest = GetPersonImagesRequest();
 
   Future<bool> getPopularPeopleData({bool isRefresh = false }) async {
     if (isRefresh) {
@@ -116,5 +128,104 @@ class PopularPeopleController extends GetxController  with StateMixin<PopularPeo
     return false;
   }
 
+  Future<void> getPopularDetailsData(int personId) async {
+
+     myPersonDetailsResponse.value=GetPersonDetailsResponse();
+    EasyLoading.show();
+    getPersonDetailsRequest!.api_key = "99d82c14f594b2706abe96bbce3e235c";
+    getPersonDetailsRequest!.language = "en-Us";
+    Logger().i(getPopularPeopleRequest!.toJson());
+    client!.getPopularPeopleDetails(personId,getPopularPeopleRequest!.toJson(),).then((res) {
+      // if(EasyLoading.isShow){
+      //   EasyLoading.dismiss();
+      // }
+
+      myPersonDetailsResponse.value = res;
+      print("my myPersonDetailsResponse   " + myPersonDetailsResponse.value.toString());
+
+      update();
+      detailsLoaded=true;
+
+    }).catchError((Object obj) {
+      // if(EasyLoading.isShow){
+      //   EasyLoading.dismiss();
+      // }
+      // non-200 error goes here.
+      switch (obj.runtimeType) {
+        case DioError:
+        // Here's the sample to get the failed response error code and message
+          print("erorrrrrrrrrrrrrrr");
+          final res = (obj as DioError).response;
+          Logger().e("Got error : ${res?.statusCode} -> ${res?.statusMessage}");
+
+          Get.snackbar(
+            "خطأ",
+            res!.statusMessage.toString(),
+            icon: const Icon(Icons.person, color: Colors.red),
+            backgroundColor: Colors.yellow,
+            snackPosition: SnackPosition.BOTTOM,);
+          detailsLoaded=true;
+          return Future.error(false);
+        default:
+          final err = (obj).toString();
+          Logger().e("Got error : $err");
+          detailsLoaded=true;
+          break;
+      }
+
+    });
+    // if(EasyLoading.isShow){
+    //   EasyLoading.dismiss();
+    // }
+  }
+
+  Future<void> getPopularImages(int personId) async {
+    profileList.clear();
+    // EasyLoading.show();
+    getPersonImagesRequest!.api_key = "99d82c14f594b2706abe96bbce3e235c";
+
+    Logger().i(getPopularPeopleRequest!.toJson());
+    client!.getPersonImages(personId,getPopularPeopleRequest!.toJson(),).then((res) {
+      // if(EasyLoading.isShow){
+      //   EasyLoading.dismiss();
+      // }
+        profileList = res.profiles ?? [];
+
+      myPersonImagesResponse.value = res;
+      print("my myPersonImagesResponse len " + profileList.length.toString());
+
+      update();
+      imagesLoaded=true;
+    }).catchError((Object obj) {
+      // if(EasyLoading.isShow){
+      //   EasyLoading.dismiss();
+      // }
+      imagesLoaded=true;
+      // non-200 error goes here.
+      switch (obj.runtimeType) {
+        case DioError:
+        // Here's the sample to get the failed response error code and message
+          print("erorrrrrrrrrrrrrrr");
+          final res = (obj as DioError).response;
+          Logger().e("Got error : ${res?.statusCode} -> ${res?.statusMessage}");
+
+          Get.snackbar(
+            "خطأ",
+            res!.statusMessage.toString(),
+            icon: const Icon(Icons.person, color: Colors.red),
+            backgroundColor: Colors.yellow,
+            snackPosition: SnackPosition.BOTTOM,);
+          return Future.error(false);
+        default:
+          final err = (obj).toString();
+          Logger().e("Got error : $err");
+
+          break;
+      }
+    });
+    // if(EasyLoading.isShow){
+    //   EasyLoading.dismiss();
+    // }
+  }
 
 }
