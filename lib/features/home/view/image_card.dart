@@ -16,13 +16,10 @@ class ImageCard extends StatefulWidget {
 }
 
 class _ImageCardState extends State<ImageCard> {
-   late bool visible;
 
   @override
   void initState() {
-    visible = false;
     super.initState();
-
   }
 
   @override
@@ -34,7 +31,6 @@ class _ImageCardState extends State<ImageCard> {
         alignment: Alignment.center,
         children: [
           Container(
-
             height: MediaQuery.of(context).size.height*.25,
             width: MediaQuery.of(context).size.width*.85,
             decoration: BoxDecoration(

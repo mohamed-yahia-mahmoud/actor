@@ -1,14 +1,9 @@
-import 'package:actor/appCore/network/response/GetPersonDetailsResponse.dart';
 import 'package:actor/features/home/controller/PopularPeopleController.dart';
 import 'package:actor/features/home/view/ImagePage.dart';
 import 'package:actor/features/home/view/grid_card.dart';
 import 'package:actor/features/home/view/image_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:get/get.dart';
 class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
@@ -62,7 +57,6 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                                 showBottomSheetForRequest(context);
                                 EasyLoading.dismiss();
                               });
-
                             },
                                 child: ImageCard(url:controller.popularList[index].profilePath,itemId: controller.popularList[index].id,)
                             );
@@ -76,6 +70,7 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
               ))),
     );
   }
+  /// for view the details of the selected person
   void showBottomSheetForRequest(BuildContext context){
     showModalBottomSheet(
       context: context,
@@ -167,9 +162,6 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                       ],
                     ),
                   ),
-                  /// date of birth  & country
-
-
                   ///bio
                   Padding(
                     padding: const EdgeInsets.only(left:20.0,right: 20,top: 4,bottom: 8),
@@ -178,7 +170,7 @@ class PopularPeoplePage extends  GetWidget<PopularPeopleController>  {
                         fontSize: 11,fontWeight: FontWeight.w400,color: Colors.black.withOpacity(.6)
                     ),maxLines: 10,),
                   ),
-
+                  /// a gridview of images for the selected person
                   SizedBox(
                     height: MediaQuery.of(context).size.height*.54,
                     child:  GridView.builder(

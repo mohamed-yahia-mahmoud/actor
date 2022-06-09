@@ -31,13 +31,13 @@ class ImagePage extends  GetWidget<PopularPeopleController>  {
                           /// Saved with this method.
                           var imageId = await ImageDownloader.downloadImage("https://image.tmdb.org/t/p/w500/"+controller.openedPersonProfileImage!.filePath!);
                           if (imageId == null) {
-                            Get.snackbar("Sorry","Image not saved 😞");
+                            Get.snackbar("Sorry","Image not saved 😞",snackPosition: SnackPosition.BOTTOM);
                             return;
                           }else{
-                              Get.snackbar("Success","Image saved 😊");
+                              Get.snackbar("Success","Image saved 😊",snackPosition: SnackPosition.BOTTOM);
                           }
                         } on PlatformException catch (error) {
-                          Get.snackbar("Sorry","Image not saved 😞");
+                          Get.snackbar("Sorry","Image not saved 😞",snackPosition: SnackPosition.BOTTOM);
                           print(error);
                         }
                       }

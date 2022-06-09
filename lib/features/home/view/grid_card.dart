@@ -16,11 +16,9 @@ class GridCard extends StatefulWidget {
 }
 
 class _GridCardState extends State<GridCard> {
-   late bool visible;
 
   @override
   void initState() {
-    visible = false;
     super.initState();
 
   }
